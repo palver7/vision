@@ -7,6 +7,7 @@ from .ps_roi_align import ps_roi_align, PSRoIAlign
 from .ps_roi_pool import ps_roi_pool, PSRoIPool
 from .poolers import MultiScaleRoIAlign
 from .feature_pyramid_network import FeaturePyramidNetwork
+from .equi_conv import equi_conv2d, EquiConv2d
 
 from ._register_onnx_ops import _register_custom_op
 
