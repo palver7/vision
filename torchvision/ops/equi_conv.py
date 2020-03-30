@@ -39,10 +39,13 @@ def equi_conv2d(input, weight, bias=None, stride=(1, 1), padding=(0, 0), dilatio
         >>> # returns
         >>>  torch.Size([1, 5, 8, 8])
     """
-
+    
+    weight = weight.to(input.device)
     out_channels = weight.shape[0]
     if bias is None:
         bias = torch.zeros(out_channels, device=input.device, dtype=input.dtype)
+    else:
+        bias = bias.to(input.device)    
 
     stride_h, stride_w = _pair(stride)
     pad_h, pad_w = _pair(padding)
@@ -81,7 +84,7 @@ def equi_conv2d(input, weight, bias=None, stride=(1, 1), padding=(0, 0), dilatio
         u_r, v_r = u, v 
         u_r, v_r = u_r-float(pano_W)/2.,v_r-float(pano_H)/2.
         phi, theta = u_r/(pano_W) * (math.pi) *2, -v_r/(pano_H) * (math.pi)
-
+        
         ROT = rotation_matrix((0,1,0),phi)
         ROT = torch.matmul(ROT,rotation_matrix((1,0,0),theta))#np.eye(3)
         
@@ -139,6 +142,7 @@ def equi_conv2d(input, weight, bias=None, stride=(1, 1), padding=(0, 0), dilatio
     
     offset = distortion_aware_map(pano_W, pano_H, weights_w, weights_h, 
               s_width = stride_w, s_height = stride_h, bs = input.shape[0])
+    offset = offset.to(input.device)          
     n_offset_grps = offset.shape[1] // (2 * weights_h * weights_w)    
     if n_offset_grps == 0:
         raise RuntimeError(
